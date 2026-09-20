@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Javier — security, software &amp; longevity</title>
+<meta name="description" content="Javier — penetration testing, full-stack development, Arduino builds and biohacking research. Based in Toronto, working worldwide.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+:root{
+  --ground:#0B0D0F; --surface:#121518; --surface2:#171C20;
+  --text:#ECEDEA; --muted:#98A0A6; --line:#242A2F; --accent:#5FE3A1;
+  box-sizing:border-box;
+}
+*,*::before,*::after{box-sizing:inherit;}
+html{scroll-behavior:smooth; scroll-padding-top:80px;}
+body{
+  margin:0; background:var(--ground); color:var(--text);
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.display{font-family:'Space Grotesk',sans-serif;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+a{text-decoration:none; color:var(--accent);}
+img{max-width:100%;}
+.wrap{max-width:1120px; margin:0 auto; padding:0 clamp(20px,5vw,80px);}
+.section{border-top:1px solid var(--line);}
+.section-inner{padding:clamp(56px,9vw,88px) 0;}
+.eyebrow{font-size:13px; letter-spacing:1px; color:var(--accent); text-transform:uppercase; margin-bottom:14px;}
+h1,h2{margin:0; letter-spacing:-0.5px; font-weight:700;}
+h2{font-size:clamp(26px,4vw,34px);}
+.lead{color:var(--muted);}
+
+/* nav */
+.nav{position:sticky; top:0; z-index:50; border-bottom:1px solid var(--line);
+  background:rgba(11,13,15,0.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);}
+.nav-inner{height:76px; display:flex; align-items:center; justify-content:space-between;}
+.brand{font-size:18px; font-weight:500; color:var(--text); letter-spacing:-0.3px;}
+.nav-links{display:flex; align-items:center; gap:34px;}
+.navlink{color:var(--muted); font-size:15px; font-weight:500; transition:color .15s ease;}
+.navlink:hover{color:var(--text);}
+.status{display:inline-flex; align-items:center; gap:8px; padding:7px 14px; border:1px solid var(--line); border-radius:999px; font-size:13px; color:var(--muted);}
+.dot{width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent); animation:pulse 2.4s ease-in-out infinite;}
+.nav-contact{display:none; color:var(--accent); font-weight:500; font-size:15px;}
+
+/* hero */
+.hero{position:relative; background-image:radial-gradient(rgba(255,255,255,0.045) 1px, transparent 1px);
+  background-size:24px 24px; animation:drift 22s linear infinite;}
+.hero-inner{padding:clamp(56px,9vw,96px) 0; display:flex; gap:clamp(32px,5vw,56px); align-items:center;}
+.hero-text{flex:1; min-width:0;}
+.hero h1{font-size:clamp(32px,5.4vw,54px); line-height:1.07;}
+.hero .lead{margin:26px 0 0; font-size:clamp(16px,2vw,18px); line-height:1.62; max-width:53ch;}
+.btns{display:flex; flex-wrap:wrap; gap:14px; margin-top:34px;}
+.btn{padding:14px 26px; border-radius:10px; font-size:15.5px; font-weight:600; transition:transform .12s ease;}
+.btn:hover{transform:translateY(-1px);}
+.btn-primary{background:var(--accent); color:var(--ground);}
+.btn-ghost{border:1px solid var(--line); color:var(--text); font-weight:500; transition:border-color .15s ease,color .15s ease,transform .12s ease;}
+.btn-ghost:hover{border-color:var(--accent);}
+.stack{margin-top:30px; font-size:13.5px; color:var(--muted);}
+.term{width:432px; max-width:100%; flex-shrink:0; background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:0 22px 55px rgba(0,0,0,.45);}
+.term-bar{display:flex; align-items:center; padding:14px 18px; border-bottom:1px solid var(--line);}
+.term-dots{display:flex; gap:7px;}
+.term-dots span{width:11px; height:11px; border-radius:50%; background:#333A40;}
+.term-title{margin-left:auto; font-size:12px; color:var(--muted);}
+.term-body{padding:22px 24px; font-size:14px; line-height:1.9;}
+.p{color:var(--accent);} .g{color:var(--muted);} .sp{height:10px;}
+.cursor{background:var(--accent); color:var(--ground); animation:blink 1.1s steps(1) infinite;}
+
+/* cards */
+.grid-focus{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; margin-top:40px;}
+.grid-2{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:24px; margin-top:40px;}
+.grid-3{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin-top:38px;}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:14px; transition:border-color .16s ease, background .16s ease, transform .16s ease;}
+.card:hover{border-color:var(--accent); background:var(--surface2); transform:translateY(-3px);}
+.focus-card{padding:26px; display:flex; flex-direction:column; gap:15px;}
+.icon{width:44px; height:44px; border-radius:11px; background:color-mix(in srgb, var(--accent) 13%, transparent); color:var(--accent); display:flex; align-items:center; justify-content:center;}
+.card-title{font-size:18.5px; font-weight:600;}
+.card-desc{font-size:14.5px; line-height:1.55; color:var(--muted);}
+.head-row{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+
+/* projects */
+.proj{overflow:hidden; border-radius:16px;}
+.proj-img{height:150px; background:var(--surface2); display:flex; align-items:center; justify-content:center; color:#5B6268; font-size:13px;}
+.proj-body{padding:24px;}
+.tag{font-size:12px; letter-spacing:1px; color:var(--accent); text-transform:uppercase; margin-bottom:12px;}
+.proj-name{font-size:20px; font-weight:600; margin-bottom:8px;}
+.arrow{display:inline-block; transition:transform .16s ease;}
+.card:hover .arrow{transform:translateX(4px);}
+
+/* currently gallery */
+.gallery{display:flex; gap:18px; margin-top:36px; overflow-x:auto; padding-bottom:10px; scroll-snap-type:x mandatory;}
+.gallery::-webkit-scrollbar{height:8px;}
+.gallery::-webkit-scrollbar-thumb{background:var(--line); border-radius:8px;}
+.shot{scroll-snap-align:start; flex:0 0 300px; height:400px; border-radius:16px; border:1px solid var(--line); background:var(--surface2); overflow:hidden; position:relative; display:flex; align-items:flex-end; transition:border-color .16s ease, transform .16s ease;}
+.shot:hover{border-color:var(--accent); transform:translateY(-3px);}
+.shot-tag{position:absolute; top:16px; left:16px; font-size:11px; color:#5B6268;}
+.shot-cap{width:100%; padding:18px; background:linear-gradient(to top, rgba(11,13,15,.92), rgba(11,13,15,0));}
+.shot-city{font-size:11.5px; letter-spacing:1px; color:var(--accent);}
+.shot-note{font-size:14px; color:var(--text); margin-top:5px;}
+
+/* writing */
+.post{padding:26px; display:flex; flex-direction:column;}
+.post-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
+.post-cat{font-size:11.5px; letter-spacing:1px; color:var(--accent);}
+.post-date{font-size:11.5px; color:var(--muted);}
+.post-title{font-size:19.5px; font-weight:600; line-height:1.25; margin-bottom:12px;}
+.read{margin-top:auto; font-size:14.5px; font-weight:500;}
+
+/* contact */
+.contact-inner{padding:clamp(56px,9vw,88px) 0; display:flex; gap:clamp(32px,5vw,56px); align-items:flex-start;}
+.contact-left{flex:1; min-width:0;}
+.contact-left h2{font-size:clamp(30px,4.5vw,40px); line-height:1.1;}
+.contact-rows{margin-top:30px; display:flex; flex-direction:column; gap:16px;}
+.crow{display:flex; align-items:center; gap:12px;}
+.crow .ic{color:var(--accent); display:flex;}
+.socials{display:flex; gap:26px; margin-top:28px; flex-wrap:wrap;}
+.social{display:flex; align-items:center; gap:8px; font-size:14.5px; color:var(--muted); transition:color .15s ease;}
+.social:hover{color:var(--text);}
+.form{width:420px; max-width:100%; flex-shrink:0; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:30px;}
+.form-label{display:block; font-size:13px; color:var(--muted); margin-bottom:8px;}
+.field{margin-bottom:18px;}
+.input{width:100%; background:var(--surface2); border:1px solid var(--line); border-radius:9px; padding:12px 14px; color:var(--text); font-size:15px; outline:none; font-family:'IBM Plex Sans',sans-serif;}
+.input:focus{border-color:var(--accent);}
+textarea.input{resize:vertical;}
+::placeholder{color:#5B6268;}
+.send{width:100%; margin-top:20px; background:var(--accent); color:var(--ground); border:none; border-radius:9px; padding:13px; font-size:15px; font-weight:600; cursor:pointer; transition:transform .12s ease;}
+.send:hover{transform:translateY(-1px);}
+
+/* footer */
+.footer-inner{padding:40px 0; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+.foot-left{display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+.foot-links{display:flex; gap:26px; flex-wrap:wrap;}
+
+@keyframes drift{to{background-position:24px 24px;}}
+@keyframes blink{50%{opacity:0;}}
+@keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.5;}}
+
+@media(max-width:860px){
+  .hero-inner{flex-direction:column; align-items:stretch;}
+  .term{width:100%;}
+  .contact-inner{flex-direction:column;}
+  .form{width:100%;}
+}
+@media(max-width:720px){
+  .nav-links{display:none;}
+  .nav-contact{display:inline-block;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+<div class="wrap nav-inner">
+<a href="#top" class="brand mono">javier<span style="color:var(--accent)">mx</span><span style="color:var(--accent)">_</span></a>
+<nav class="nav-links">
+<a href="#focus" class="navlink">Focus</a>
+<a href="#projects" class="navlink">Projects</a>
+<a href="#currently" class="navlink">Currently</a>
+<a href="#writing" class="navlink">Writing</a>
+<a href="#contact" class="navlink">Contact</a>
+<span class="status"><span class="dot"></span>Available</span>
+</nav>
+<a href="#contact" class="nav-contact">Contact</a>
+</div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero">
+<div class="wrap hero-inner">
+<div class="hero-text">
+<div class="eyebrow mono">// Toronto → working worldwide</div>
+<h1 class="display">I fragment systems, ship software, and tinker with human longevity.</h1>
+<p class="lead">Penetration testing, full-stack development, Arduino builds and biohacking research — collected in one place. Wherever you are in the world, this is where you reach me.</p>
+<div class="btns">
+<a href="#contact" class="btn btn-primary">Get in touch</a>
+<a href="#writing" class="btn btn-ghost">Read the blog</a>
+</div>
+<div class="stack mono">PHP · Java · Python · JavaScript · Arduino</div>
+</div>
+<div class="term">
+<div class="term-bar">
+<div class="term-dots"><span></span><span></span><span></span></div>
+<span class="term-title mono">bash — javiermx</span>
+</div>
+<div class="term-body mono">
+<div><span class="p">$</span> <span class="g">whoami</span></div>
+<div>javier — security &amp; software</div>
+<div class="sp"></div>
+<div><span class="p">$</span> <span class="g">cat focus.txt</span></div>
+<div><span class="p">→</span> penetration testing</div>
+<div><span class="p">→</span> full-stack · php java python js</div>
+<div><span class="p">→</span> arduino &amp; hardware</div>
+<div><span class="p">→</span> biohacking / longevity</div>
+<div class="sp"></div>
+<div><span class="p">$</span> <span class="g">location --now</span></div>
+<div>Toronto, CA · remote worldwide</div>
+<div style="height:8px"></div>
+<div><span class="p">$</span> <span class="cursor">&nbsp;</span></div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FOCUS -->
+<section id="focus" class="section">
+<div class="wrap section-inner">
+<div class="eyebrow mono">// what I do</div>
+<h2 class="display">Four things I go deep on.</h2>
+<p class="lead" style="margin:8px 0 0; font-size:16px;">Different disciplines, one common thread: taking things apart to understand how they really work.</p>
+<div class="grid-focus">
+<div class="card focus-card">
+<div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.5v5.5c0 4.4-3 7.4-7 8.5-4-1.1-7-4.1-7-8.5V5.5z"/><path d="M9 12l2 2 4-4"/></svg></div>
+<div class="card-title display">Penetration Testing</div>
+<div class="card-desc">Finding the gaps in a system before someone with worse intentions does.</div>
+</div>
+<div class="card focus-card">
+<div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4"/><path d="M16 8l4 4-4 4"/><path d="M13.5 6l-3 12"/></svg></div>
+<div class="card-title display">Development</div>
+<div class="card-desc">PHP, Java, Python and JavaScript — from backend logic to the browser.</div>
+</div>
+<div class="card focus-card">
+<div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg></div>
+<div class="card-title display">Arduino &amp; Hardware</div>
+<div class="card-desc">Sensors, microcontrollers and small machines that do something useful.</div>
+</div>
+<div class="card focus-card">
+<div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></div>
+<div class="card-title display">Biohacking &amp; Longevity</div>
+<div class="card-desc">Notes on longevity research, emerging compounds and human performance.</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="section">
+<div class="wrap section-inner">
+<div class="eyebrow mono">// selected work</div>
+<h2 class="display">Things I've built.</h2>
+<p class="lead" style="margin:8px 0 0; font-size:16px;">A place for personal projects and the work I take on for clients.</p>
+<div class="grid-2">
+<div class="card proj">
+<div class="proj-img mono">[ screenshot / photo ]</div>
+<div class="proj-body">
+<div class="tag mono">Personal</div>
+<div class="proj-name display">[ Project name ]</div>
+<div class="card-desc" style="margin-bottom:16px;">An app, a tool or a hardware build of your own. Add a short description and a link.</div>
+<a href="#">View project <span class="arrow">→</span></a>
+</div>
+</div>
+<div class="card proj">
+<div class="proj-img mono">[ screenshot / photo ]</div>
+<div class="proj-body">
+<div class="tag mono">Client work</div>
+<div class="proj-name display">[ Project name ]</div>
+<div class="card-desc" style="margin-bottom:16px;">Something you built on contract. Tell the story of the problem and how you solved it.</div>
+<a href="#">View project <span class="arrow">→</span></a>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CURRENTLY -->
+<section id="currently" class="section">
+<div class="wrap section-inner">
+<div class="head-row">
+<div>
+<div class="eyebrow mono">// currently</div>
+<h2 class="display">Where I am right now.</h2>
+<p class="lead" style="margin:8px 0 0; font-size:16px;">A rolling strip of photos from wherever the work takes me.</p>
+</div>
+<span class="mono" style="font-size:12px; color:var(--muted); white-space:nowrap;">now → Toronto, CA</span>
+</div>
+<div class="gallery">
+<div class="shot">
+<span class="shot-tag mono">[ photo ]</span>
+<div class="shot-cap">
+<div class="shot-city mono">NOW · TORONTO</div>
+<div class="shot-note">Home base.</div>
+</div>
+</div>
+<div class="shot">
+<span class="shot-tag mono">[ photo ]</span>
+<div class="shot-cap">
+<div class="shot-city mono">[ CITY ]</div>
+<div class="shot-note">[ what you were up to ]</div>
+</div>
+</div>
+<div class="shot">
+<span class="shot-tag mono">[ photo ]</span>
+<div class="shot-cap">
+<div class="shot-city mono">[ CITY ]</div>
+<div class="shot-note">[ what you were up to ]</div>
+</div>
+</div>
+<div class="shot">
+<span class="shot-tag mono">[ photo ]</span>
+<div class="shot-cap">
+<div class="shot-city mono">[ CITY ]</div>
+<div class="shot-note">[ what you were up to ]</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- WRITING -->
+<section id="writing" class="section">
+<div class="wrap section-inner">
+<div class="head-row">
+<div>
+<div class="eyebrow mono">// from the notebook</div>
+<h2 class="display">Writing &amp; build logs.</h2>
+<p class="lead" style="margin:8px 0 0; font-size:16px;">Where I am, what I'm building, and what I'm reading right now.</p>
+</div>
+<a href="#" class="navlink" style="white-space:nowrap;">All posts →</a>
+</div>
+<div class="grid-3">
+<div class="card post">
+<div class="post-top"><span class="post-cat mono">BUILD LOG</span><span class="post-date mono">[ DATE ]</span></div>
+<div class="post-title display">An Arduino build worth writing up</div>
+<div class="card-desc" style="margin-bottom:18px;">From the parts list to the finished thing — wiring, code, and what I'd change next time.</div>
+<a href="#" class="read">Read <span class="arrow">→</span></a>
+</div>
+<div class="card post">
+<div class="post-top"><span class="post-cat mono">RESEARCH</span><span class="post-date mono">[ DATE ]</span></div>
+<div class="post-title display">Notes on a longevity compound</div>
+<div class="card-desc" style="margin-bottom:18px;">Breaking down a paper or a molecule that's getting attention, in plain language.</div>
+<a href="#" class="read">Read <span class="arrow">→</span></a>
+</div>
+<div class="card post">
+<div class="post-top"><span class="post-cat mono">FIELD NOTE</span><span class="post-date mono">[ DATE ]</span></div>
+<div class="post-title display">Where I am this month</div>
+<div class="card-desc" style="margin-bottom:18px;">A short personal update, a few photos, and what I'm working on next.</div>
+<a href="#" class="read">Read <span class="arrow">→</span></a>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section">
+<div class="wrap contact-inner">
+<div class="contact-left">
+<div class="eyebrow mono">// say hello</div>
+<h2 class="display">Wherever you are, let's talk.</h2>
+<p class="lead" style="margin:22px 0 0; font-size:17px; line-height:1.6; max-width:46ch;">I work across time zones and I'm open to projects, collaborations and the occasional contract. Email is the fastest way to reach me.</p>
+<div class="contact-rows">
+<div class="crow">
+<span class="ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+<a href="mailto:hola@javiermx.com" class="mono" style="font-size:16px;">hola@javiermx.com</a>
+</div>
+<div class="crow">
+<span class="ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-5.2-6-10a6 6 0 1 1 12 0c0 4.8-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg></span>
+<span style="font-size:15.5px; color:var(--muted);">Toronto, Canada · available remote worldwide</span>
+</div>
+</div>
+<div class="socials">
+<a href="#" class="social"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 .5C5.4.5 0 5.9 0 12.6c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 24 12.6C24 5.9 18.6.5 12 .5z"/></svg>GitHub</a>
+<a href="#" class="social"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.3c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9V21H9z"/></svg>LinkedIn</a>
+<a href="#" class="social"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M18.2 3h3.3l-7.2 8.3L23 21h-6.6l-5.2-6.8L5.3 21H2l7.7-8.9L1.6 3h6.8l4.7 6.2L18.2 3zm-1.2 16h1.8L7.1 4.9H5.2L17 19z"/></svg>X</a>
+</div>
+</div>
+<div class="form">
+<div class="mono" style="font-size:12px; letter-spacing:1px; color:var(--muted); text-transform:uppercase; margin-bottom:22px;">Send a message</div>
+<div class="field">
+<label class="form-label" for="cname">Name</label>
+<input class="input" id="cname" type="text" placeholder="Your name">
+</div>
+<div class="field">
+<label class="form-label" for="cemail">Email</label>
+<input class="input" id="cemail" type="email" placeholder="you@example.com">
+</div>
+<div>
+<label class="form-label" for="cmsg">Message</label>
+<textarea class="input" id="cmsg" rows="4" placeholder="What's on your mind?"></textarea>
+</div>
+<button type="button" class="send">Send message</button>
+</div>
+</div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="section">
+<div class="wrap footer-inner">
+<div class="foot-left">
+<span class="mono" style="font-size:16px; color:var(--text);">javier<span style="color:var(--accent)">mx</span></span>
+<span style="font-size:14px; color:var(--muted);">© 2026 Javier · Built in Toronto.</span>
+</div>
+<div class="foot-links">
+<a href="#focus" class="navlink" style="font-size:14px;">Focus</a>
+<a href="#projects" class="navlink" style="font-size:14px;">Projects</a>
+<a href="#writing" class="navlink" style="font-size:14px;">Writing</a>
+<a href="#top" class="navlink" style="font-size:14px;">Top ↑</a>
+</div>
+</div>
+</footer>
+
+</body>
+</html>
