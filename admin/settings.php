@@ -6,6 +6,7 @@ require __DIR__ . '/_layout.php';
 $fields = [
     'site_title'       => ['SEO — Título del sitio', 'text'],
     'site_description' => ['SEO — Descripción del sitio', 'area'],
+    'google_site_verification' => ['Google Search Console — código de verificación (meta tag)', 'text'],
     'hero_eyebrow'     => ['Hero — línea pequeña', 'text'],
     'hero_heading'     => ['Hero — titular', 'area'],
     'hero_lead'        => ['Hero — párrafo', 'area'],
