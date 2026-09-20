@@ -22,10 +22,12 @@ $anchor = function (string $id) use ($ON_HOME) {
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="<?= e(url('assets/site.css')) ?>">
+<style>
+<?php $__css = __DIR__ . '/../assets/site.css'; if (is_file($__css)) { readfile($__css); } ?>
+:root{--accent:<?= e($accent) ?>;}
+</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap"></noscript>
-<style>:root{--accent:<?= e($accent) ?>;}</style>
 </head>
 <body>
 <header class="nav">
