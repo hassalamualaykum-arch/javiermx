@@ -11,5 +11,15 @@
 </div>
 </div>
 </footer>
+<script>
+(function () {
+  if (location.hash === '#contact') {
+    window.addEventListener('load', function () {
+      var el = document.getElementById('contact');
+      if (el) el.scrollIntoView({ block: 'start' });
+    });
+  }
+})();
+</script>
 </body>
 </html>
