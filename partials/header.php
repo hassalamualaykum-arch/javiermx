@@ -20,6 +20,9 @@ $anchor = function (string $id) use ($ON_HOME) {
 <meta property="og:description" content="<?= e($meta_desc) ?>">
 <?php if ($og_image): ?><meta property="og:image" content="<?= e($og_image) ?>"><?php endif; ?>
 <meta name="twitter:card" content="summary_large_image">
+<?php if (setting('google_site_verification')): ?>
+<meta name="google-site-verification" content="<?= e(setting('google_site_verification')) ?>">
+<?php endif; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
