@@ -20,8 +20,11 @@ $anchor = function (string $id) use ($ON_HOME) {
 <meta property="og:description" content="<?= e($meta_desc) ?>">
 <?php if ($og_image): ?><meta property="og:image" content="<?= e($og_image) ?>"><?php endif; ?>
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="<?= e(url('assets/site.css')) ?>">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap"></noscript>
 <style>:root{--accent:<?= e($accent) ?>;}</style>
 </head>
 <body>
