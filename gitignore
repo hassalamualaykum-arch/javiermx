@@ -1,0 +1,8 @@
+# Datos sensibles y locales — NO subir y NO borrar en el deploy
+config.php
+*.sql
+
+# Imágenes subidas desde el panel: la carpeta se mantiene, su contenido se conserva
+/uploads/*
+!/uploads/.gitkeep
+!/uploads/.htaccess
