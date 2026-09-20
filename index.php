@@ -1,17 +1,52 @@
 <?php
 require __DIR__ . '/config.php';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['do'] ?? '') === 'contact_send') {
+    csrf_verify();
+    $name     = trim($_POST['name'] ?? '');
+    $email    = trim($_POST['email'] ?? '');
+    $message  = trim($_POST['message'] ?? '');
+    $honeypot = trim($_POST['website'] ?? '');
+    $ip       = $_SERVER['REMOTE_ADDR'] ?? '';
+
+    if ($honeypot === '') {
+        if ($name === '' || $message === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            flash('Revisa los datos: nombre, un email válido y un mensaje son obligatorios.', 'err');
+        } else {
+            $blocked = db()->prepare(
+                'SELECT COUNT(*) FROM blocked_senders WHERE (type = "email" AND value = ?) OR (type = "ip" AND value = ?)'
+            );
+            $blocked->execute([$email, $ip]);
+            $recent = db()->prepare(
+                'SELECT COUNT(*) FROM contact_messages WHERE ip_address = ? AND created_at > (NOW() - INTERVAL 1 MINUTE)'
+            );
+            $recent->execute([$ip]);
+
+            if ((int) $blocked->fetchColumn() > 0) {
+                // Remitente bloqueado: no revelamos el bloqueo, se comporta como un envío exitoso.
+            } elseif ((int) $recent->fetchColumn() > 0) {
+                flash('Ya enviaste un mensaje hace un momento. Espera un poco antes de enviar otro.', 'err');
+            } else {
+                db()->prepare('INSERT INTO contact_messages (name, email, message, ip_address) VALUES (?, ?, ?, ?)')
+                    ->execute([$name, $email, $message, $ip]);
+                flash('¡Gracias! Tu mensaje fue enviado, te responderé pronto.');
+            }
+        }
+    }
+    redirect(url('index.php') . '#contact');
+}
+
 $projects = db()->query('SELECT * FROM projects ORDER BY sort_order, id')->fetchAll();
 $currently = db()->query('SELECT * FROM currently ORDER BY sort_order, id')->fetchAll();
 $posts = db()->query(
-    "SELECT p.*, c.name AS cat_name FROM posts p
-     LEFT JOIN categories c ON c.id = p.category_id
-     WHERE p.status = 'published'
-     ORDER BY p.created_at DESC LIMIT 3"
+"SELECT p.*, c.name AS cat_name FROM posts p
+LEFT JOIN categories c ON c.id = p.category_id
+WHERE p.status = 'published'
+ORDER BY p.created_at DESC LIMIT 3"
 )->fetchAll();
 
 $meta_title = setting('site_title');
-$meta_desc  = setting('site_description');
+$meta_desc = setting('site_description');
 $ON_HOME = true;
 require __DIR__ . '/partials/header.php';
 ?>
@@ -186,13 +221,19 @@ require __DIR__ . '/partials/header.php';
 <a href="<?= e(setting('x_url')) ?>" class="social"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M18.2 3h3.3l-7.2 8.3L23 21h-6.6l-5.2-6.8L5.3 21H2l7.7-8.9L1.6 3h6.8l4.7 6.2L18.2 3zm-1.2 16h1.8L7.1 4.9H5.2L17 19z"/></svg>X</a>
 </div>
 </div>
-<div class="form">
+<form class="form" method="post" action="<?= e(url('index.php')) ?>#contact">
+<?= csrf_field() ?>
+<input type="hidden" name="do" value="contact_send">
+<div class="hp"><label for="cwebsite">Website</label><input type="text" id="cwebsite" name="website" tabindex="-1" autocomplete="off"></div>
 <div class="mono" style="font-size:12px; letter-spacing:1px; color:var(--muted); text-transform:uppercase; margin-bottom:22px;">Send a message</div>
-<div class="field"><label class="form-label" for="cname">Name</label><input class="input" id="cname" type="text" placeholder="Your name"></div>
-<div class="field"><label class="form-label" for="cemail">Email</label><input class="input" id="cemail" type="email" placeholder="you@example.com"></div>
-<div><label class="form-label" for="cmsg">Message</label><textarea class="input" id="cmsg" rows="4" placeholder="What's on your mind?"></textarea></div>
-<button type="button" class="send">Send message</button>
-</div>
+<?php foreach (take_flashes() as $f): ?>
+<div class="contact-flash <?= e($f['type']) ?>"><?= e($f['msg']) ?></div>
+<?php endforeach; ?>
+<div class="field"><label class="form-label" for="cname">Name</label><input class="input" id="cname" name="name" type="text" placeholder="Your name" required></div>
+<div class="field"><label class="form-label" for="cemail">Email</label><input class="input" id="cemail" name="email" type="email" placeholder="you@example.com" required></div>
+<div><label class="form-label" for="cmsg">Message</label><textarea class="input" id="cmsg" name="message" rows="4" placeholder="What's on your mind?" required></textarea></div>
+<button type="submit" class="send">Send message</button>
+</form>
 </div>
 </section>
 
