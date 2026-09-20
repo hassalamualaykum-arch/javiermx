@@ -103,6 +103,10 @@ textarea.input{resize:vertical;}
 ::placeholder{color:#5B6268;}
 .send{width:100%; margin-top:20px; background:var(--accent); color:var(--ground); border:none; border-radius:9px; padding:13px; font-size:15px; font-weight:600; cursor:pointer; transition:transform .12s ease;}
 .send:hover{transform:translateY(-1px);}
+.hp{position:absolute; left:-9999px; top:-9999px; opacity:0; height:0; overflow:hidden;}
+.contact-flash{padding:12px 14px; border-radius:9px; margin-bottom:16px; font-size:14px; border:1px solid var(--line);}
+.contact-flash.ok{border-color:var(--accent); color:var(--accent);}
+.contact-flash.err{border-color:#F87171; color:#F87171;}
 
 .article{max-width:760px; margin:0 auto; padding:48px 0 72px;}
 .article h1{font-size:clamp(30px,5vw,46px); line-height:1.12; margin:0 0 18px;}
