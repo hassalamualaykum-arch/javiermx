@@ -4,6 +4,7 @@ require_login();
 require __DIR__ . '/_layout.php';
 
 $counts = [
+    'Mensajes'   => (int) db()->query('SELECT COUNT(*) FROM contact_messages WHERE is_read = 0')->fetchColumn(),
     'Posts'      => (int) db()->query('SELECT COUNT(*) FROM posts')->fetchColumn(),
     'Proyectos'  => (int) db()->query('SELECT COUNT(*) FROM projects')->fetchColumn(),
     'Currently'  => (int) db()->query('SELECT COUNT(*) FROM currently')->fetchColumn(),
@@ -11,7 +12,7 @@ $counts = [
     'Etiquetas'  => (int) db()->query('SELECT COUNT(*) FROM tags')->fetchColumn(),
 ];
 $links = [
-    'Posts' => 'posts.php', 'Proyectos' => 'projects.php', 'Currently' => 'currently.php',
+    'Mensajes' => 'messages.php', 'Posts' => 'posts.php', 'Proyectos' => 'projects.php', 'Currently' => 'currently.php',
     'Categorías' => 'categories.php', 'Etiquetas' => 'tags.php',
 ];
 
