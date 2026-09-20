@@ -1,0 +1,5 @@
+# Evita que se ejecute cualquier script subido a esta carpeta
+<FilesMatch "\.(php|phtml|phar|pl|py|cgi|sh|asp|aspx|js)$">
+  Require all denied
+</FilesMatch>
+Options -Indexes
