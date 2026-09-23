@@ -34,20 +34,19 @@ require __DIR__ . '/partials/header.php';
 <div class="term">
 <div class="term-bar">
 <div class="term-dots"><span></span><span></span><span></span></div>
-<span class="term-title mono">bash — javiermx</span>
+<span class="term-title mono"><?= e(setting('term_title')) ?></span>
 </div>
 <div class="term-body mono">
 <div><span class="p">$</span> <span class="g">whoami</span></div>
-<div>javier — security &amp; software</div>
+<div><?= e(setting('term_whoami')) ?></div>
 <div class="sp"></div>
 <div><span class="p">$</span> <span class="g">cat focus.txt</span></div>
-<div><span class="p">→</span> penetration testing</div>
-<div><span class="p">→</span> full-stack · php java python js</div>
-<div><span class="p">→</span> arduino &amp; hardware</div>
-<div><span class="p">→</span> biohacking enthusiast</div>
+<?php foreach (preg_split('/\R/', setting('term_focus')) as $line): if (trim($line) === '') continue; ?>
+<div><span class="p">→</span> <?= e(trim($line)) ?></div>
+<?php endforeach; ?>
 <div class="sp"></div>
 <div><span class="p">$</span> <span class="g">location --now</span></div>
-<div>Toronto, CA · remote worldwide</div>
+<div><?= e(setting('term_location')) ?></div>
 <div style="height:8px"></div>
 <div><span class="p">$</span> <span class="cursor">&nbsp;</span></div>
 </div>
@@ -58,29 +57,29 @@ require __DIR__ . '/partials/header.php';
 <!-- FOCUS -->
 <section id="focus" class="section">
 <div class="wrap section-inner">
-<div class="eyebrow mono">// what I do</div>
-<h2 class="display">Four things I go deep on.</h2>
-<p class="lead" style="margin:8px 0 0; font-size:16px;">Different disciplines, one common thread: taking things apart to understand how they really work.</p>
+<div class="eyebrow mono"><?= e(setting('focus_eyebrow')) ?></div>
+<h2 class="display"><?= e(setting('focus_heading')) ?></h2>
+<p class="lead" style="margin:8px 0 0; font-size:16px;"><?= e(setting('focus_lead')) ?></p>
 <div class="grid-focus">
 <div class="card focus-card">
 <div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.5v5.5c0 4.4-3 7.4-7 8.5-4-1.1-7-4.1-7-8.5V5.5z"/><path d="M9 12l2 2 4-4"/></svg></div>
-<div class="card-title display">Penetration Testing</div>
-<div class="card-desc">Finding the gaps in a system before someone with worse intentions does.</div>
+<div class="card-title display"><?= e(setting('focus_1_title')) ?></div>
+<div class="card-desc"><?= e(setting('focus_1_desc')) ?></div>
 </div>
 <div class="card focus-card">
 <div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8l-4 4 4 4"/><path d="M16 8l4 4-4 4"/><path d="M13.5 6l-3 12"/></svg></div>
-<div class="card-title display">Development</div>
-<div class="card-desc">PHP, Java, Python and JavaScript — from backend logic to the browser.</div>
+<div class="card-title display"><?= e(setting('focus_2_title')) ?></div>
+<div class="card-desc"><?= e(setting('focus_2_desc')) ?></div>
 </div>
 <div class="card focus-card">
 <div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg></div>
-<div class="card-title display">Arduino &amp; Hardware</div>
-<div class="card-desc">Sensors, microcontrollers and small machines that do something useful.</div>
+<div class="card-title display"><?= e(setting('focus_3_title')) ?></div>
+<div class="card-desc"><?= e(setting('focus_3_desc')) ?></div>
 </div>
 <div class="card focus-card">
 <div class="icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></div>
-<div class="card-title display">Biohacking &amp; enthusiast</div>
-<div class="card-desc">Notes on biohacking research, emerging compounds and human performance.</div>
+<div class="card-title display"><?= e(setting('focus_4_title')) ?></div>
+<div class="card-desc"><?= e(setting('focus_4_desc')) ?></div>
 </div>
 </div>
 </div>
