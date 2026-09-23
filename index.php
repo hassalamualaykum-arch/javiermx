@@ -136,14 +136,34 @@ require __DIR__ . '/partials/header.php';
 <script>
 document.querySelectorAll('.slider').forEach(function (sl) {
   var g = sl.querySelector('.gallery'), prev = sl.querySelector('.prev'), next = sl.querySelector('.next');
+  var raf = null;
+  function max() { return g.scrollWidth - g.clientWidth; }
   function step() { var c = g.querySelector('.shot'); return c ? c.offsetWidth + 18 : g.clientWidth; }
   function update() {
     prev.disabled = g.scrollLeft <= 2;
-    next.disabled = g.scrollLeft + g.clientWidth >= g.scrollWidth - 2;
-    sl.classList.toggle('no-overflow', g.scrollWidth <= g.clientWidth + 2);
+    next.disabled = g.scrollLeft >= max() - 2;
+    sl.classList.toggle('no-overflow', max() <= 2);
   }
-  prev.addEventListener('click', function () { g.scrollBy({ left: -step(), behavior: 'smooth' }); });
-  next.addEventListener('click', function () { g.scrollBy({ left: step(), behavior: 'smooth' }); });
+  // Animación propia con easing (más suave que scrollBy + snap).
+  function go(dir) {
+    var s = step(), from = g.scrollLeft;
+    var to = Math.max(0, Math.min(max(), (Math.round(from / s) + dir) * s));
+    if (Math.abs(to - from) < 1) return;
+    cancelAnimationFrame(raf);
+    g.classList.add('animating');
+    var start = null, dur = 520;
+    function ease(t) { return 1 - Math.pow(1 - t, 3); }
+    function frame(ts) {
+      if (start === null) start = ts;
+      var t = Math.min(1, (ts - start) / dur);
+      g.scrollLeft = from + (to - from) * ease(t);
+      if (t < 1) { raf = requestAnimationFrame(frame); }
+      else { g.classList.remove('animating'); update(); }
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  prev.addEventListener('click', function () { go(-1); });
+  next.addEventListener('click', function () { go(1); });
   g.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', update);
   window.addEventListener('load', update);
