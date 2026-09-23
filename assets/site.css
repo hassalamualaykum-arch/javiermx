@@ -68,8 +68,9 @@ h2{font-size:clamp(26px,4vw,34px);}
 .arrow{display:inline-block; transition:transform .16s ease;}
 .card:hover .arrow{transform:translateX(4px);}
 
-.slider{position:relative; margin-top:36px;}
-.gallery{display:flex; gap:18px; overflow-x:auto; padding:4px 0; scroll-snap-type:x mandatory; scroll-behavior:smooth; scrollbar-width:none;}
+.slider{position:relative; margin-top:36px; container-type:inline-size;}
+.gallery{display:flex; gap:18px; overflow-x:auto; padding:4px 0; scroll-snap-type:x mandatory; scrollbar-width:none;}
+.gallery.animating{scroll-snap-type:none;}
 .gallery::-webkit-scrollbar{display:none;}
 .slide-btn{position:absolute; top:50%; transform:translateY(-50%); z-index:2; width:44px; height:44px; border-radius:50%; border:1px solid var(--line); background:var(--surface); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:border-color .16s ease, color .16s ease, opacity .16s ease;}
 .slide-btn:hover:not(:disabled){border-color:var(--accent); color:var(--accent);}
@@ -82,12 +83,15 @@ h2{font-size:clamp(26px,4vw,34px);}
   .slide-btn.prev{left:10px;}
   .slide-btn.next{right:10px;}
 }
-.shot{scroll-snap-align:start; flex:0 0 300px; height:400px; border-radius:16px; border:1px solid var(--line); background:var(--surface2); overflow:hidden; position:relative; display:flex; align-items:flex-end; transition:border-color .16s ease, transform .16s ease; background-size:cover; background-position:center;}
+.shot{scroll-snap-align:start; flex:0 0 100%; aspect-ratio:3/4; border-radius:16px; border:1px solid var(--line); background:var(--surface2); overflow:hidden; position:relative; display:flex; align-items:flex-end; transition:border-color .16s ease, transform .16s ease; background-size:cover; background-position:center;}
 .shot:hover{border-color:var(--accent); transform:translateY(-3px);}
 .shot-tag{position:absolute; top:16px; left:16px; font-size:11px; color:#5B6268;}
 .shot-cap{width:100%; padding:18px; background:linear-gradient(to top, rgba(11,13,15,.92), rgba(11,13,15,0));}
 .shot-city{font-size:11.5px; letter-spacing:1px; color:var(--accent);}
 .shot-note{font-size:14px; color:var(--text); margin-top:5px;}
+/* 1, 2 o 3 fotos completas según el ancho: nunca queda una cortada */
+@container (min-width:420px){ .shot{flex-basis:calc((100% - 18px) / 2);} }
+@container (min-width:640px){ .shot{flex-basis:calc((100% - 36px) / 3);} }
 
 .post{padding:26px; display:flex; flex-direction:column;}
 .post-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;}
