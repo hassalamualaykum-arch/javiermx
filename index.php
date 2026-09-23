@@ -118,6 +118,8 @@ require __DIR__ . '/partials/header.php';
 </div>
 <span class="mono" style="font-size:12px; color:var(--muted); white-space:nowrap;"><?= e(setting('currently_now')) ?></span>
 </div>
+<div class="slider">
+<button type="button" class="slide-btn prev" aria-label="Anterior"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
 <div class="gallery">
 <?php foreach ($currently as $c): $img = img_src($c['image']); ?>
 <div class="shot"<?= $img ? ' style="background-image:url(\'' . e($img) . '\')"' : '' ?>>
@@ -129,6 +131,25 @@ require __DIR__ . '/partials/header.php';
 </div>
 <?php endforeach; ?>
 </div>
+<button type="button" class="slide-btn next" aria-label="Siguiente"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+<script>
+document.querySelectorAll('.slider').forEach(function (sl) {
+  var g = sl.querySelector('.gallery'), prev = sl.querySelector('.prev'), next = sl.querySelector('.next');
+  function step() { var c = g.querySelector('.shot'); return c ? c.offsetWidth + 18 : g.clientWidth; }
+  function update() {
+    prev.disabled = g.scrollLeft <= 2;
+    next.disabled = g.scrollLeft + g.clientWidth >= g.scrollWidth - 2;
+    sl.classList.toggle('no-overflow', g.scrollWidth <= g.clientWidth + 2);
+  }
+  prev.addEventListener('click', function () { g.scrollBy({ left: -step(), behavior: 'smooth' }); });
+  next.addEventListener('click', function () { g.scrollBy({ left: step(), behavior: 'smooth' }); });
+  g.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  window.addEventListener('load', update);
+  update();
+});
+</script>
 </div>
 </section>
 
