@@ -115,7 +115,30 @@ if ($action === 'form') {
     <textarea class="in" id="excerpt" name="excerpt" rows="2"><?= e($item['excerpt']) ?></textarea>
 
     <label class="f" for="body">Contenido (acepta HTML)</label>
-    <textarea class="in" id="body" name="body" rows="12"><?= e($item['body']) ?></textarea>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+      <select class="in" id="code-lang" style="width:auto;padding:7px 10px;font-size:13px">
+        <?php foreach (['php', 'python', 'java', 'javascript', 'bash', 'arduino', 'cpp', 'c', 'html', 'css', 'sql', 'json', 'text'] as $l): ?>
+        <option value="<?= $l ?>"><?= $l ?></option>
+        <?php endforeach; ?>
+      </select>
+      <button type="button" class="btn ghost" id="code-insert" style="padding:7px 14px;font-size:13px">&lt;/&gt; Insertar código</button>
+      <span class="muted" style="font-size:12px">Pega el código entre las líneas <span class="mono">```</span> — se mostrará en caja con botón de copiar.</span>
+    </div>
+    <textarea class="in mono" id="body" name="body" rows="16" style="font-size:14px"><?= e($item['body']) ?></textarea>
+    <script>
+    document.getElementById('code-insert').addEventListener('click', function () {
+      var ta = document.getElementById('body');
+      var lang = document.getElementById('code-lang').value;
+      var s = ta.selectionStart, en = ta.selectionEnd, v = ta.value;
+      var sel = v.slice(s, en) || 'pega tu código aquí';
+      var before = (s > 0 && v[s - 1] !== '\n') ? '\n' : '';
+      var block = before + '```' + lang + '\n' + sel + '\n```\n';
+      ta.value = v.slice(0, s) + block + v.slice(en);
+      var start = s + before.length + 3 + lang.length + 1;
+      ta.focus();
+      ta.setSelectionRange(start, start + sel.length);
+    });
+    </script>
 
     <label class="f" for="url">Imagen de portada — pega un link</label>
     <input class="in" id="url" name="cover_url" value="<?= e($item['cover_image']) ?>" placeholder="https://…">
