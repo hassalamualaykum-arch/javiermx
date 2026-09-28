@@ -13,6 +13,14 @@ $posts = db()->query(
 $meta_title = setting('site_title');
 $meta_desc  = setting('site_description');
 $ON_HOME = true;
+$canonical = '';   // la portada canónica es https://javiermx.com/ (no /index.php)
+$json_ld = [
+    '@context' => 'https://schema.org',
+    '@type'    => 'WebSite',
+    'name'     => setting('site_title'),
+    'url'      => 'https://javiermx.com/',
+    'author'   => ['@type' => 'Person', 'name' => 'Javier', 'url' => 'https://javiermx.com/'],
+];
 require __DIR__ . '/partials/header.php';
 ?>
 

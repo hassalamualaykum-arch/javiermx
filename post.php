@@ -14,6 +14,7 @@ if (!$post) {
     http_response_code(404);
     $meta_title = 'Not found — ' . setting('site_title');
     $meta_desc = '';
+    $noindex = true;
     require __DIR__ . '/partials/header.php';
     echo '<main class="wrap"><div class="article"><h1>404</h1><p class="lead">That post does not exist. <a href="' . e(url('blog.php')) . '">Back to writing →</a></p></div></main>';
     require __DIR__ . '/partials/footer.php';
@@ -27,10 +28,36 @@ $tt = db()->prepare(
 $tt->execute([(int) $post['id']]);
 $ptags = $tt->fetchAll();
 
+require_once __DIR__ . '/partials/seo.php';
 $cover = img_src($post['cover_image']);
-$meta_title = ($post['seo_title'] ?: $post['title']) . ' — ' . setting('site_title');
+$meta_title = ($post['seo_title'] ?: $post['title']) . ' — ' . SITE_NAME;
 $meta_desc  = $post['seo_description'] ?: $post['excerpt'];
+if ($meta_desc === '') {
+    // Sin extracto: usa el inicio del texto del post (sin HTML) como descripción.
+    $plain = trim(preg_replace('/\s+/', ' ', strip_tags(render_body($post['body']))));
+    $meta_desc = preg_match('/^.{156}/su', $plain) && preg_match('/^.{0,152}/su', $plain, $cut)
+        ? rtrim($cut[0]) . '…' : $plain;
+}
 $og_image   = $cover;
+$og_type    = 'article';
+$canonical  = 'post.php?slug=' . urlencode($post['slug']);
+$modified   = $post['updated_at'] ?? $post['created_at'];
+$json_ld = [
+    '@context'         => 'https://schema.org',
+    '@type'            => 'BlogPosting',
+    'headline'         => $post['title'],
+    'description'      => $meta_desc,
+    'datePublished'    => date(DATE_ATOM, strtotime($post['created_at'])),
+    'dateModified'     => date(DATE_ATOM, strtotime($modified)),
+    'mainEntityOfPage' => abs_url($canonical),
+    'url'              => abs_url($canonical),
+    'author'           => ['@type' => 'Person', 'name' => 'Javier', 'url' => abs_url()],
+    'publisher'        => ['@type' => 'Person', 'name' => 'Javier', 'url' => abs_url()],
+    'inLanguage'       => 'en',
+];
+if ($cover) { $json_ld['image'] = abs_url($cover); }
+if ($post['cat_name']) { $json_ld['articleSection'] = $post['cat_name']; }
+if ($ptags) { $json_ld['keywords'] = implode(', ', array_column($ptags, 'name')); }
 require __DIR__ . '/partials/header.php';
 ?>
 <main class="wrap">

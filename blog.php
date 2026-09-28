@@ -24,6 +24,9 @@ $tags = db()->query('SELECT * FROM tags ORDER BY name')->fetchAll();
 
 $meta_title = 'Writing — ' . setting('site_title');
 $meta_desc  = 'Build logs, research notes and field notes.';
+$canonical  = 'blog.php';
+// Las vistas filtradas por categoría/etiqueta repiten posts: que Google indexe solo el listado principal.
+$noindex    = ($cat !== '' || $tag !== '');
 require __DIR__ . '/partials/header.php';
 ?>
 <main id="top">
