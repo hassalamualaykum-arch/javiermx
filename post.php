@@ -40,6 +40,7 @@ if ($meta_desc === '') {
 }
 $og_image   = $cover;
 $og_type    = 'article';
+$track_post_id = (int) $post['id'];
 $canonical  = 'post.php?slug=' . urlencode($post['slug']);
 $modified   = $post['updated_at'] ?? $post['created_at'];
 $json_ld = [
