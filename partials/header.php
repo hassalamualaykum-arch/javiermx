@@ -5,6 +5,8 @@
  *             $og_type ("website" | "article"), $json_ld (array → JSON-LD para Google), $noindex (bool).
  */
 require_once __DIR__ . '/seo.php';
+require_once __DIR__ . '/visits.php';
+track_visit(isset($track_post_id) ? (int) $track_post_id : null);
 $meta_title = $meta_title ?? setting('site_title', 'javiermx');
 $meta_desc  = $meta_desc  ?? setting('site_description', '');
 $ON_HOME    = $ON_HOME ?? false;
