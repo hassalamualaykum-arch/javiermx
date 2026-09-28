@@ -7,14 +7,28 @@ if (current_user()) redirect(url('admin/index.php'));
 $count = (int) db()->query('SELECT COUNT(*) FROM admin_users')->fetchColumn();
 if ($count === 0) redirect(url('admin/setup.php'));
 
+require __DIR__ . '/_throttle.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
+    $ip   = client_ip();
+    $wait = login_blocked_for($ip);
+    if ($wait > 0) {
+        flash('Demasiados intentos fallidos. Espera ' . ceil($wait / 60) . ' min y vuelve a intentarlo.', 'err');
+        redirect(url('admin/login.php'));
+    }
     $user = trim($_POST['username'] ?? '');
     $pass = $_POST['password'] ?? '';
     if (login_user($user, $pass)) {
+        login_record($ip, $user, true);
         redirect(url('admin/index.php'));
     }
-    flash('Usuario o contraseña incorrectos.', 'err');
+    login_record($ip, $user, false);
+    sleep(1); // frena a los bots que prueban contraseñas en serie
+    $wait = login_blocked_for($ip);
+    flash($wait > 0
+        ? 'Demasiados intentos fallidos. Espera ' . ceil($wait / 60) . ' min y vuelve a intentarlo.'
+        : 'Usuario o contraseña incorrectos.', 'err');
     redirect(url('admin/login.php'));
 }
 ?><!doctype html>

@@ -2,9 +2,14 @@
 require __DIR__ . '/../config.php';
 require_login();
 require __DIR__ . '/_layout.php';
+require __DIR__ . '/../partials/visits.php';
 
 $counts = [
-    'Mensajes'   => (int) db()->query('SELECT COUNT(*) FROM contact_messages WHERE is_read = 0')->fetchColumn(),
+    'Visitas hoy' => with_table(VISITS_TABLE_SQL, function () {
+        $st = db()->prepare('SELECT COUNT(DISTINCT visitor) FROM visits WHERE day = ?');
+        $st->execute([date('Y-m-d')]);
+        return (int) $st->fetchColumn();
+    }),
     'Posts'      => (int) db()->query('SELECT COUNT(*) FROM posts')->fetchColumn(),
     'Proyectos'  => (int) db()->query('SELECT COUNT(*) FROM projects')->fetchColumn(),
     'Currently'  => (int) db()->query('SELECT COUNT(*) FROM currently')->fetchColumn(),
@@ -12,7 +17,7 @@ $counts = [
     'Etiquetas'  => (int) db()->query('SELECT COUNT(*) FROM tags')->fetchColumn(),
 ];
 $links = [
-    'Mensajes' => 'messages.php', 'Posts' => 'posts.php', 'Proyectos' => 'projects.php', 'Currently' => 'currently.php',
+    'Visitas hoy' => 'stats.php', 'Posts' => 'posts.php', 'Proyectos' => 'projects.php', 'Currently' => 'currently.php',
     'Categorías' => 'categories.php', 'Etiquetas' => 'tags.php',
 ];
 
