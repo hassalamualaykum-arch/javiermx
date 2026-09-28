@@ -206,6 +206,31 @@ function handle_image(string $fileKey, string $urlValue, string $existing = ''):
     return $existing;
 }
 
+/**
+ * Prepara el cuerpo de un post para mostrarlo: convierte los bloques
+ *   ```php
+ *   ...código...
+ *   ```
+ * en <pre><code> con el código escapado (así "<", ">" y "&" se ven tal cual).
+ * El resto del cuerpo se deja como HTML del autor.
+ */
+function render_body(string $body): string {
+    // Alias para lenguajes que highlight.js no trae con ese nombre.
+    $alias = ['arduino' => 'cpp', 'ino' => 'cpp', 'html' => 'xml', 'sh' => 'bash', 'shell' => 'bash', 'txt' => 'plaintext', 'text' => 'plaintext'];
+    $body = str_replace("\r\n", "\n", $body);
+    return preg_replace_callback(
+        '/^[ \t]*```[ \t]*([\w+#.-]*)[ \t]*\n(.*?)\n?^[ \t]*```[ \t]*$/ms',
+        function ($m) use ($alias) {
+            $label = strtolower($m[1]);
+            $lang  = $alias[$label] ?? ($label ?: 'plaintext');
+            $code  = rtrim($m[2], "\n");
+            return '<pre class="code-block" data-lang="' . e($label ?: 'code') . '"><code class="language-' . e($lang) . '">'
+                 . e($code) . '</code></pre>';
+        },
+        $body
+    ) ?? $body;
+}
+
 /** Convierte el valor guardado en una URL usable en <img src>. */
 function img_src(string $val): string {
     if ($val === '') return '';

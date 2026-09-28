@@ -43,7 +43,7 @@ require __DIR__ . '/partials/header.php';
 </div>
 <?php if ($cover): ?><img class="cover" src="<?= e($cover) ?>" alt="<?= e($post['title']) ?>"><?php endif; ?>
 <div class="body">
-<?= $post['body'] /* HTML del autor */ ?>
+<?= render_body($post['body']) /* HTML del autor + bloques ``` de código */ ?>
 </div>
 <?php if ($ptags): ?>
 <div style="margin-top:34px;">
@@ -54,4 +54,58 @@ require __DIR__ . '/partials/header.php';
 <?php endif; ?>
 </article>
 </main>
+<!-- Bloques de código: colores (highlight.js) + botón de copiar -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+(function () {
+  var ICON_COPY = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
+  var ICON_OK = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    return new Promise(function (ok, fail) {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy') ? ok() : fail(); } catch (e) { fail(e); }
+      document.body.removeChild(ta);
+    });
+  }
+
+  document.querySelectorAll('.article .body pre').forEach(function (pre) {
+    var code = pre.querySelector('code') || pre;
+    if (window.hljs && code !== pre) { try { hljs.highlightElement(code); } catch (e) {} }
+
+    var box = document.createElement('div');
+    box.className = 'code-box';
+    var bar = document.createElement('div');
+    bar.className = 'code-bar';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'code-copy';
+    btn.title = 'Copiar código';
+    btn.setAttribute('aria-label', 'Copiar código');
+    btn.innerHTML = ICON_COPY;
+    var lang = document.createElement('span');
+    lang.className = 'code-lang mono';
+    lang.textContent = pre.getAttribute('data-lang') || 'code';
+    bar.appendChild(btn);
+    bar.appendChild(lang);
+
+    pre.parentNode.insertBefore(box, pre);
+    box.appendChild(bar);
+    box.appendChild(pre);
+
+    var timer;
+    btn.addEventListener('click', function () {
+      copyText(code.innerText).then(function () {
+        btn.innerHTML = ICON_OK; btn.classList.add('ok');
+        clearTimeout(timer);
+        timer = setTimeout(function () { btn.innerHTML = ICON_COPY; btn.classList.remove('ok'); }, 1600);
+      });
+    });
+  });
+})();
+</script>
 <?php require __DIR__ . '/partials/footer.php'; ?>
