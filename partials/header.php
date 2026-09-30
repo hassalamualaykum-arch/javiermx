@@ -67,6 +67,7 @@ $anchor = function (string $id) use ($ON_HOME) {
 <a href="<?= e($anchor('projects')) ?>" class="navlink">Projects</a>
 <a href="<?= e($anchor('currently')) ?>" class="navlink">Currently</a>
 <a href="<?= e(url('blog.php')) ?>" class="navlink">Writing</a>
+<a href="<?= e(url('store.php')) ?>" class="navlink">Store</a>
 <a href="<?= e($anchor('contact')) ?>" class="navlink">Contact</a>
 <span class="status"><span class="dot"></span>Available</span>
 </nav>
