@@ -22,7 +22,9 @@ body{
   margin:0; min-height:100vh; color:var(--text); background:var(--ground);
   font-family:var(--f-body); font-size:16px; line-height:1.6;
   font-feature-settings:'cv11','ss01'; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  display:flex; flex-direction:column; /* el pie queda abajo aunque la página sea corta */
 }
+main{flex:1 0 auto; width:100%;}
 /* Luces aurora fijas detrás de todo: es lo que el vidrio deja ver difuminado */
 body::before{
   content:''; position:fixed; inset:-6%; z-index:-2; pointer-events:none;
@@ -40,6 +42,9 @@ body::after{
   background-size:56px 56px;
   -webkit-mask-image:radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%); mask-image:radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
 }
+/* Contorno visible al navegar con teclado (Tab) */
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:8px;}
+.input:focus-visible{outline:none;}
 ::selection{background:color-mix(in srgb, var(--accent) 35%, transparent); color:#fff;}
 
 .display{font-family:var(--f-display); letter-spacing:-.02em;}
@@ -48,7 +53,10 @@ a{text-decoration:none; color:var(--accent); transition:color .15s ease;}
 img{max-width:100%;}
 .wrap{max-width:1160px; margin:0 auto; padding:0 clamp(20px,5vw,72px);}
 .section{border-top:none; position:relative;}
-.section-inner{padding:clamp(64px,9vw,104px) 0;}
+.section-inner{padding-block:clamp(64px,9vw,104px);}
+/* Línea de luz que separa las secciones */
+main > section + section::before{content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:min(1016px, calc(100% - 40px)); height:1px;
+  background:linear-gradient(90deg, transparent, var(--line-hi) 25%, color-mix(in srgb, var(--accent) 35%, transparent) 50%, var(--line-hi) 75%, transparent);}
 .eyebrow{
   display:inline-flex; align-items:center; gap:8px; font-family:var(--f-mono);
   font-size:12px; font-weight:500; letter-spacing:.12em; color:var(--accent); text-transform:uppercase;
@@ -65,7 +73,7 @@ h2{font-size:clamp(28px,4.2vw,42px); line-height:1.12;}
 }
 
 /* ── Navegación: barra de vidrio flotante ── */
-.nav{position:sticky; top:12px; z-index:50; margin:12px auto 0; max-width:min(1180px, calc(100% - 24px)); border:1px solid var(--line); border-radius:16px;
+.nav{position:sticky; top:12px; z-index:50; margin:12px auto 0; width:100%; max-width:min(1180px, calc(100% - 24px)); border:1px solid var(--line); border-radius:16px;
      background:rgba(10,14,24,.55); backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur); box-shadow:var(--shadow);}
 .nav .wrap{padding:0 clamp(16px,2.5vw,28px);}
 .nav-inner{height:64px; display:flex; align-items:center; justify-content:space-between;}
@@ -79,7 +87,7 @@ h2{font-size:clamp(28px,4.2vw,42px); line-height:1.12;}
 
 /* ── Hero ── */
 .hero{position:relative;}
-.hero-inner{padding:clamp(64px,10vw,120px) 0 clamp(56px,8vw,96px); display:flex; gap:clamp(36px,5vw,64px); align-items:center;}
+.hero-inner{padding-block:clamp(64px,10vw,120px) clamp(56px,8vw,96px); display:flex; gap:clamp(36px,5vw,64px); align-items:center;}
 .hero-text{flex:1; min-width:0;}
 .hero h1{font-size:clamp(38px,6vw,68px); line-height:1.06; letter-spacing:-.035em; padding-bottom:.08em;
   background:linear-gradient(180deg,#fff 30%, #B9C3D9); -webkit-background-clip:text; background-clip:text; color:transparent;}
@@ -164,7 +172,7 @@ h2{font-size:clamp(28px,4.2vw,42px); line-height:1.12;}
 .read{margin-top:auto; padding-top:8px; font-size:14.5px; font-weight:600;}
 
 /* ── Contacto ── */
-.contact-inner{padding:clamp(64px,9vw,104px) 0; display:flex; gap:clamp(36px,5vw,64px); align-items:flex-start;}
+.contact-inner{padding-block:clamp(64px,9vw,104px); display:flex; gap:clamp(36px,5vw,64px); align-items:flex-start;}
 .contact-left{flex:1; min-width:0;}
 .contact-left h2{font-size:clamp(32px,4.8vw,46px); line-height:1.08;}
 .contact-rows{margin-top:32px; display:flex; flex-direction:column; gap:16px;}
@@ -190,7 +198,7 @@ textarea.input{resize:vertical;}
 .contact-flash.err{border-color:rgba(248,113,113,.6); color:#F87171;}
 
 /* ── Artículo ── */
-.article{max-width:760px; margin:0 auto; padding:56px 0 80px;}
+.article{max-width:760px; margin:0 auto; padding-block:56px 80px;}
 .article h1{font-size:clamp(32px,5vw,50px); line-height:1.1; letter-spacing:-.03em; margin:0 0 18px;}
 .article .meta{color:var(--muted); font-size:14px; margin-bottom:30px;}
 .article .cover{width:100%; border-radius:var(--radius); border:1px solid var(--line); margin-bottom:36px; box-shadow:var(--shadow);}
@@ -214,7 +222,7 @@ textarea.input{resize:vertical;}
 
 /* ── Pie ── */
 footer.section{border-top:1px solid var(--line); background:rgba(7,10,18,.4); backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);}
-.footer-inner{padding:36px 0; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+.footer-inner{padding-block:36px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;}
 .foot-left{display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
 .foot-links{display:flex; gap:22px; flex-wrap:wrap;}
 
@@ -223,9 +231,14 @@ footer.section{border-top:1px solid var(--line); background:rgba(7,10,18,.4); ba
   50%{transform:translate3d(-3%,2%,0) scale(1.06);}
   100%{transform:translate3d(3%,-2%,0) scale(1.02);}
 }
+/* Las tarjetas aparecen suavemente al bajar (solo navegadores que lo soportan; los demás las muestran normal) */
+@supports (animation-timeline: view()){
+  .card,.term,.form,.shot{animation:rise linear both; animation-timeline:view(); animation-range:entry 0% entry 30%;}
+}
+@keyframes rise{from{opacity:0; translate:0 28px;}}
 @keyframes blink{50%{opacity:0;}}
 @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.5;}}
-@media (prefers-reduced-motion:reduce){ body::before,.dot,.cursor{animation:none;} html{scroll-behavior:auto;} }
+@media (prefers-reduced-motion:reduce){ body::before,.dot,.cursor,.card,.term,.form,.shot{animation:none;} html{scroll-behavior:auto;} }
 /* Navegadores sin backdrop-filter: paneles algo más opacos para que el texto se lea igual */
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   .card,.term,.form,.nav{background:rgba(16,21,34,.92);}
