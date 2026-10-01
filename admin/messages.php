@@ -38,37 +38,41 @@ admin_head('Mensajes');
 ?>
 <h1 class="page">Mensajes de contacto</h1>
 <div class="card">
+<div style="overflow-x:auto;">
 <table>
-<tr><th>Fecha</th><th>Nombre</th><th>Email</th><th>Mensaje</th><th>IP</th><th></th></tr>
+<tr><th>Fecha</th><th>Remitente</th><th>Mensaje</th><th></th></tr>
 <?php foreach ($messages as $m): ?>
 <tr style="<?= $m['is_read'] ? '' : 'font-weight:600;' ?>">
 <td class="mono muted" style="white-space:nowrap;"><?= e(date('d M, H:i', strtotime($m['created_at']))) ?></td>
-<td><?= e($m['name']) ?></td>
-<td class="mono"><?= e($m['email']) ?></td>
-<td style="max-width:320px;"><?= e(mb_strimwidth($m['message'], 0, 140, '…')) ?></td>
-<td class="mono muted"><?= e($m['ip_address']) ?></td>
-<td style="text-align:right; white-space:nowrap;">
-<form method="post" style="display:inline">
+<td style="min-width:240px;"><?= e($m['name']) ?>
+<div class="mono" style="font-size:13px; overflow-wrap:anywhere;"><?= e($m['email']) ?></div>
+<div class="mono muted" style="font-size:12px;"><?= e($m['ip_address']) ?></div></td>
+<td style="min-width:200px;"><?= e(mb_strimwidth($m['message'], 0, 140, '…')) ?></td>
+<td style="width:1%;">
+<div style="display:grid; grid-template-columns:repeat(2, max-content); gap:6px; justify-content:end;">
+<form method="post">
 <?= csrf_field() ?><input type="hidden" name="do" value="toggle_read"><input type="hidden" name="id" value="<?= (int) $m['id'] ?>">
-<button class="btn ghost" style="padding:5px 10px;"><?= $m['is_read'] ? 'Marcar no leído' : 'Marcar leído' ?></button>
+<button class="btn ghost" style="padding:5px 10px; width:100%;"><?= $m['is_read'] ? 'Marcar no leído' : 'Marcar leído' ?></button>
 </form>
-<form method="post" style="display:inline" onsubmit="return confirm('¿Bloquear este email y borrar el mensaje?')">
+<form method="post" onsubmit="return confirm('¿Bloquear este email y borrar el mensaje?')">
 <?= csrf_field() ?><input type="hidden" name="do" value="block"><input type="hidden" name="type" value="email"><input type="hidden" name="value" value="<?= e($m['email']) ?>"><input type="hidden" name="id" value="<?= (int) $m['id'] ?>">
-<button class="btn danger" style="padding:5px 10px;margin-left:6px;">Bloquear email</button>
+<button class="btn danger" style="padding:5px 10px; width:100%;">Bloquear email</button>
 </form>
-<form method="post" style="display:inline" onsubmit="return confirm('¿Bloquear esta IP y borrar el mensaje?')">
+<form method="post" onsubmit="return confirm('¿Bloquear esta IP y borrar el mensaje?')">
 <?= csrf_field() ?><input type="hidden" name="do" value="block"><input type="hidden" name="type" value="ip"><input type="hidden" name="value" value="<?= e($m['ip_address']) ?>"><input type="hidden" name="id" value="<?= (int) $m['id'] ?>">
-<button class="btn danger" style="padding:5px 10px;margin-left:6px;">Bloquear IP</button>
+<button class="btn danger" style="padding:5px 10px; width:100%;">Bloquear IP</button>
 </form>
-<form method="post" style="display:inline" onsubmit="return confirm('¿Borrar este mensaje?')">
+<form method="post" onsubmit="return confirm('¿Borrar este mensaje?')">
 <?= csrf_field() ?><input type="hidden" name="do" value="delete"><input type="hidden" name="id" value="<?= (int) $m['id'] ?>">
-<button class="btn danger" style="padding:5px 10px;margin-left:6px;">Borrar</button>
+<button class="btn danger" style="padding:5px 10px; width:100%;">Borrar</button>
 </form>
+</div>
 </td>
 </tr>
 <?php endforeach; ?>
-<?php if (!$messages): ?><tr><td colspan="6" class="muted">Sin mensajes todavía.</td></tr><?php endif; ?>
+<?php if (!$messages): ?><tr><td colspan="4" class="muted">Sin mensajes todavía.</td></tr><?php endif; ?>
 </table>
+</div>
 </div>
 
 <h1 class="page" style="margin-top:40px;">Remitentes bloqueados</h1>
