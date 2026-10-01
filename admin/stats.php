@@ -89,15 +89,15 @@ admin_head('Estadísticas');
 h2.sec{font-size:17px;margin:30px 0 12px}
 .chart{position:relative;height:220px;margin:8px 0 0 34px}
 .grid-line{position:absolute;left:0;right:0;border-top:1px solid var(--line)}
-.grid-line span{position:absolute;left:-34px;top:-8px;width:28px;text-align:right;font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.grid-line span{position:absolute;left:-34px;top:-8px;width:28px;text-align:right;font-size:11px;color:var(--muted);font-family:var(--f-mono)}
 .bars{position:absolute;inset:0;display:flex;align-items:flex-end;gap:2px}
 .col{flex:1;height:100%;display:flex;align-items:flex-end;cursor:default;position:relative}
-.col .bar{width:100%;background:var(--accent);border-radius:4px 4px 0 0;min-height:0}
+.col .bar{width:100%;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 45%,var(--cyan)));border-radius:5px 5px 0 0;min-height:0;box-shadow:0 0 18px -6px color-mix(in srgb,var(--accent) 70%,transparent)}
 .col.zero .bar{height:2px!important;background:var(--line);border-radius:1px}
 .col:hover .bar{filter:brightness(1.15)}
 .col:hover::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.04);border-radius:4px;pointer-events:none}
 .xlabels{display:flex;gap:2px;margin:6px 0 0 34px}
-.xlabels span{flex:1;font-size:11px;color:var(--muted);text-align:center;white-space:nowrap;overflow:visible;font-family:'IBM Plex Mono',monospace}
+.xlabels span{flex:1;font-size:11px;color:var(--muted);text-align:center;white-space:nowrap;overflow:visible;font-family:var(--f-mono)}
 .tip{position:absolute;pointer-events:none;background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:8px 11px;font-size:13px;white-space:nowrap;transform:translate(-50%,-100%);margin-top:-8px;z-index:2;box-shadow:0 6px 20px rgba(0,0,0,.35)}
 .tip b{font-variant-numeric:tabular-nums}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}

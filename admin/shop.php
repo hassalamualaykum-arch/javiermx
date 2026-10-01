@@ -367,7 +367,7 @@ admin_head('Tienda');
 .help{border:1px dashed var(--accent);border-radius:10px;padding:14px 16px;color:var(--muted);font-size:13.5px;line-height:1.6;margin-bottom:6px}
 .help b,.help strong{color:var(--text)}
 .copyrow{display:flex;gap:8px}
-.copyrow .in{font-family:'IBM Plex Mono',monospace;font-size:13px}
+.copyrow .in{font-family:var(--f-mono);font-size:13px}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
 h2.sec{font-size:16px;margin:26px 0 10px}
 .check{display:flex;align-items:center;gap:8px;margin-top:18px;font-size:14px}
