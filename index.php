@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['do'] ?? '') === 'contact_s
             }
         }
     }
-    redirect(url('index.php') . '#contact');
+    redirect(url() . '#contact');
 }
 
 $projects = db()->query('SELECT * FROM projects ORDER BY sort_order, id')->fetchAll();
@@ -270,7 +270,7 @@ document.querySelectorAll('.slider').forEach(function (sl) {
 <a href="<?= e(setting('x_url')) ?>" class="social"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M18.2 3h3.3l-7.2 8.3L23 21h-6.6l-5.2-6.8L5.3 21H2l7.7-8.9L1.6 3h6.8l4.7 6.2L18.2 3zm-1.2 16h1.8L7.1 4.9H5.2L17 19z"/></svg>X</a>
 </div>
 </div>
-<form class="form" method="post" action="<?= e(url('index.php')) ?>#contact">
+<form class="form" method="post" action="<?= e(url()) ?>#contact">
 <?= csrf_field() ?>
 <input type="hidden" name="do" value="contact_send">
 <div class="hp"><label for="cwebsite">Website</label><input type="text" id="cwebsite" name="website" tabindex="-1" autocomplete="off"></div>
