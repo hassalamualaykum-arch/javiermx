@@ -71,7 +71,7 @@ th{color:var(--muted);font-weight:500;font-size:12px;text-transform:uppercase;le
 <body>
 <div class="topbar"><div class="topbar-in">
 <span class="brand">javier<span style="color:var(--accent)">mx</span> · panel</span>
-<?php $link('index.php','Inicio'); $link('stats.php','Estadísticas'); $link('sales.php','Ventas'); $link('posts.php','Posts'); $link('projects.php','Proyectos'); $link('currently.php','Currently'); $link('categories.php','Categorías'); $link('tags.php','Etiquetas'); $link('settings.php','Ajustes'); ?>
+<?php $link('index.php','Inicio'); $link('stats.php','Estadísticas'); $link('sales.php','Ventas'); $link('shop.php','Tienda'); $link('posts.php','Posts'); $link('projects.php','Proyectos'); $link('currently.php','Currently'); $link('categories.php','Categorías'); $link('tags.php','Etiquetas'); $link('settings.php','Ajustes'); ?>
 <span class="spacer"></span>
 <a class="a-link" href="<?= e(url('')) ?>" target="_blank">Ver sitio ↗</a>
 <a class="a-link" href="<?= e(url('admin/logout.php')) ?>">Salir (<?= e($u['username'] ?? '') ?>)</a>

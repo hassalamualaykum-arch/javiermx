@@ -1,32 +1,25 @@
 <?php
 /**
- * gracias.php (v3) — entrega archivos SOLO si Stripe confirma que la compra fue pagada.
+ * gracias.php (v4) — entrega archivos SOLO si Stripe confirma que la compra fue pagada.
  *
  * Ubicación:  public_html/gracias.php   (súbelo también a tu repositorio: no lleva secretos)
- * Catálogo:   ../private_files/products.php      (los productos 'digital' con 'id' y 'file')
+ * Catálogo:   ../private_files/products.json     (lo edita el panel; usa los productos 'digital' con 'id' y 'file')
  * Archivos:   ../private_files/<archivo>
  * Llave:      ../private_files/stripe-secrets.php
  *
- * Ya no hay catálogo aquí: para agregar un producto digital, edita products.php.
+ * Ya no hay catálogo aquí: para agregar un producto digital usa el panel (admin/shop.php).
  */
 
 $privateDir = __DIR__ . '/../private_files/';
 
-// ---------- catálogo de descargas, tomado de products.php ----------
-$products = @include $privateDir . 'products.php';
-$catalog  = [];
-if (is_array($products)) {
-    foreach ($products as $p) {
-        if (is_array($p) && ($p['type'] ?? '') === 'digital' && !empty($p['id']) && !empty($p['file'])) {
-            // Se incluyen también los productos con active=false: quien ya compró puede volver a descargar.
-            $catalog[(string) $p['id']] = [
-                'name' => (string) ($p['name'] ?? 'Download'),
-                'file' => (string) $p['file'],
-            ];
-        }
+// ---------- catálogo de descargas (products.json, que edita el panel admin/shop.php) ----------
+require_once __DIR__ . '/partials/catalog.php';
+$catalog = [];
+foreach (catalog_load() as $p) {
+    // Se incluyen también los productos ocultos: quien ya compró puede volver a descargar.
+    if ($p['type'] === 'digital' && $p['id'] !== '' && $p['file'] !== '') {
+        $catalog[$p['id']] = ['name' => $p['name'] !== '' ? $p['name'] : 'Download', 'file' => $p['file']];
     }
-} else {
-    error_log('gracias.php: no se pudo cargar private_files/products.php');
 }
 
 header('X-Robots-Tag: noindex, nofollow');

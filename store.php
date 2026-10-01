@@ -3,24 +3,21 @@
  * store.php — tienda pública de javiermx.com
  *
  * Ubicación:  public_html/store.php   (súbelo también a tu repositorio: no lleva secretos)
- * Catálogo:   ../private_files/products.php   (fuera de public_html)
+ * Catálogo:   ../private_files/products.json   (lo edita el panel: admin/shop.php)
  *
  * Muestra los productos activos en dos secciones (digitales y físicos).
  * Cada botón "Buy" lleva al Payment Link de Stripe del producto.
  */
 require __DIR__ . '/config.php';
 
-// ---------- cargar el catálogo ----------
-$products = @include __DIR__ . '/../private_files/products.php';
-if (!is_array($products)) {
-    error_log('store.php: no se pudo cargar private_files/products.php');
-    $products = [];
-}
+// ---------- cargar el catálogo (products.json, que edita el panel admin/shop.php) ----------
+require_once __DIR__ . '/partials/catalog.php';
+$products = catalog_load();
 
 // ---------- helpers ----------
 function store_is_buy_link($u): bool
 {
-    return is_string($u) && preg_match('#^https://buy\.stripe\.com/[A-Za-z0-9_\-]+$#', $u) === 1;
+    return is_string($u) && preg_match('#^https://buy\.stripe\.com/[A-Za-z0-9_\-]+$#', $u) === 1 && stripos($u, 'PEGA_AQUI') === false;
 }
 
 function store_price(array $p): string
@@ -36,10 +33,7 @@ function store_img(array $p): string
     if ($img === '') {
         return '';
     }
-    if (preg_match('#^https://#i', $img)) {
-        return $img;
-    }
-    return url(ltrim($img, '/'));
+    return img_src($img); // link https:// o archivo local (uploads/…), igual que en el resto del sitio
 }
 
 // ---------- agrupar por tipo ----------
