@@ -73,6 +73,29 @@ require __DIR__ . '/partials/header.php';
 <div class="body">
 <?= render_body($post['body']) /* HTML del autor + bloques ``` de código */ ?>
 </div>
+<?php $demo = $post['demo_url'] ?? ''; if ($demo !== ''): $demoAbs = abs_url($demo); ?>
+<aside class="demo-card">
+  <div class="demo-text">
+    <span class="demo-kicker mono">Live demo</span>
+    <p class="demo-title">Try it on your phone</p>
+    <?php if (($post['demo_note'] ?? '') !== ''): ?><p class="demo-note"><?= e($post['demo_note']) ?></p><?php endif; ?>
+    <a class="btn btn-primary demo-btn" href="<?= e($demoAbs) ?>" target="_blank" rel="noopener">▶ Open the demo</a>
+  </div>
+  <div class="demo-qr" data-url="<?= e($demoAbs) ?>" aria-label="QR code to open the demo on your phone">
+    <div class="demo-qr-img"></div>
+    <span class="mono">Scan with your phone</span>
+  </div>
+</aside>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(function () {
+  var box = document.querySelector('.demo-qr');
+  if (!box || !window.qrcode) { if (box) box.remove(); return; } // sin QR queda el botón
+  var qr = qrcode(0, 'M'); qr.addData(box.getAttribute('data-url')); qr.make();
+  box.querySelector('.demo-qr-img').innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true, alt: 'QR code' });
+})();
+</script>
+<?php endif; ?>
 <?php if ($ptags): ?>
 <div style="margin-top:34px;">
 <?php foreach ($ptags as $t): ?>

@@ -217,6 +217,21 @@ textarea.input{resize:vertical;}
 .article .body :not(pre) > code{font-family:var(--f-mono); font-size:.86em; background:var(--glass-hi); border:1px solid var(--line); border-radius:6px; padding:2px 6px;}
 .pill{display:inline-block; font-size:12px; color:var(--accent); border:1px solid color-mix(in srgb, var(--accent) 25%, transparent); background:color-mix(in srgb, var(--accent) 8%, transparent); border-radius:999px; padding:4px 12px; margin:0 6px 6px 0; transition:background .15s ease;}
 .pill:hover{background:color-mix(in srgb, var(--accent) 16%, transparent);}
+/* tarjeta de demo en vivo (PWA): botón + QR para abrirla en el celular */
+.demo-card{display:flex; align-items:center; justify-content:space-between; gap:28px; margin:40px 0 0; padding:26px 28px; border:1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius:var(--radius);
+  background:linear-gradient(160deg, color-mix(in srgb, var(--accent) 9%, transparent), rgba(255,255,255,.025)); box-shadow:var(--shadow); backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);}
+.demo-kicker{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent);}
+.demo-title{margin:6px 0 4px; font-family:var(--f-display); font-size:22px; font-weight:700; letter-spacing:-.02em;}
+.demo-note{margin:0; color:var(--muted); font-size:14px;}
+.demo-btn{margin-top:18px;}
+.demo-qr{flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:8px; font-size:11px; color:var(--muted);}
+.demo-qr-img{width:132px; height:132px; padding:10px; background:#fff; border-radius:14px;}
+.demo-qr-img svg{display:block; width:100%; height:100%;}
+@media (max-width:640px){
+  .demo-card{padding:22px;}
+  .demo-qr{display:none;} /* en el celular basta el botón */
+  .demo-btn{width:100%; justify-content:center;}
+}
 .back{color:var(--muted); font-size:14px;}
 .back:hover{color:var(--text);}
 

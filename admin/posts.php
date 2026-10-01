@@ -27,6 +27,35 @@ function sync_tags(int $postId, string $csv): void {
     }
 }
 
+/** Crea las columnas de la demo (PWA) la primera vez. Devuelve false si la BD no lo permite. */
+function ensure_demo_columns(): bool {
+    try {
+        $cols = db()->query("SHOW COLUMNS FROM posts LIKE 'demo\\_%'")->fetchAll(PDO::FETCH_COLUMN);
+        if (!in_array('demo_url', $cols, true)) {
+            db()->exec("ALTER TABLE posts ADD COLUMN demo_url VARCHAR(500) NOT NULL DEFAULT ''");
+        }
+        if (!in_array('demo_note', $cols, true)) {
+            db()->exec("ALTER TABLE posts ADD COLUMN demo_note VARCHAR(255) NOT NULL DEFAULT ''");
+        }
+        return true;
+    } catch (PDOException $ex) {
+        return false;
+    }
+}
+
+/** Link de la demo: ruta del sitio ("/pwa/x/") o https://…  Devuelve '' si no es válido. */
+function clean_demo_url(string $u): string {
+    $u = trim($u);
+    if ($u === '') return '';
+    if (preg_match('#^[\w-]+(\.[\w-]+)+/#', $u)) $u = 'https://' . $u; // "javiermx.com/pwa/x/"
+    $u = preg_replace('#^http://#i', 'https://', $u);
+    if (preg_match('#^https://#i', $u)) return filter_var($u, FILTER_VALIDATE_URL) ? $u : '';
+    $u = '/' . ltrim($u, '/');
+    return preg_match('#^/[\w\-./~%]*$#', $u) ? $u : '';
+}
+
+$demoOk = ensure_demo_columns();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_verify();
     $do = $_POST['do'] ?? '';
@@ -57,6 +86,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = (int) db()->lastInsertId();
         }
         sync_tags($id, $tagsCsv);
+        $demoRaw = trim($_POST['demo_url'] ?? '');
+        $demoUrl = clean_demo_url($demoRaw);
+        if ($demoOk) {
+            db()->prepare('UPDATE posts SET demo_url=?, demo_note=? WHERE id=?')
+                ->execute([$demoUrl, mb_substr(trim($_POST['demo_note'] ?? ''), 0, 255), $id]);
+        }
+        if ($demoRaw !== '' && $demoUrl === '') {
+            flash('Post guardado, pero el link de la demo no es válido (usa /pwa/nombre/ o https://…).', 'err');
+            redirect(url('admin/posts.php?action=form&id=' . $id));
+        }
         flash('Post guardado.');
     } elseif ($do === 'delete') {
         db()->prepare('DELETE FROM posts WHERE id=?')->execute([(int) $_POST['id']]);
@@ -68,7 +107,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($action === 'form') {
     $id = (int) ($_GET['id'] ?? 0);
     $item = ['id' => 0, 'title' => '', 'slug' => '', 'excerpt' => '', 'body' => '', 'cover_image' => '',
-             'category_id' => null, 'status' => 'draft', 'seo_title' => '', 'seo_description' => ''];
+             'category_id' => null, 'status' => 'draft', 'seo_title' => '', 'seo_description' => '',
+             'demo_url' => '', 'demo_note' => ''];
     $tagsCsv = '';
     if ($id) {
         $st = db()->prepare('SELECT * FROM posts WHERE id=?'); $st->execute([$id]);
@@ -145,6 +185,45 @@ if ($action === 'form') {
     <label class="f" for="file">…o sube un archivo (reemplaza el link)</label>
     <input class="in" id="file" name="cover_file" type="file" accept="image/*">
     <?php $img = img_src($item['cover_image']); if ($img): ?><div style="margin-top:12px"><img class="thumb" style="width:180px;height:100px" src="<?= e($img) ?>"></div><?php endif; ?>
+
+    <div style="border-top:1px solid var(--line);margin:22px 0 0;padding-top:8px">
+    <?php if ($demoOk): ?>
+    <label class="f" for="demo">Demo en vivo (PWA) — link (opcional)</label>
+    <input class="in mono" id="demo" name="demo_url" value="<?= e($item['demo_url'] ?? '') ?>" placeholder="/pwa/pwa-vibrate/  o  https://…">
+    <label class="f" for="demon">Nota de la demo (opcional)</label>
+    <input class="in" id="demon" name="demo_note" maxlength="255" value="<?= e($item['demo_note'] ?? '') ?>" placeholder="Works on Android. iPhone: no vibration.">
+    <div id="demo-prev" style="display:none;align-items:center;gap:14px;margin-top:12px">
+      <div id="demo-qr" style="width:96px;height:96px;background:#fff;border-radius:10px;padding:6px"></div>
+      <span class="muted" style="font-size:13px">Así se verá el QR en el post.<br><a id="demo-open" href="#" target="_blank" rel="noopener">Abrir la demo ↗</a></span>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    <script>
+    (function () {
+      var inp = document.getElementById('demo'), box = document.getElementById('demo-prev');
+      function abs(u) {
+        u = u.trim();
+        if (!u) return '';
+        if (/^[\w-]+(\.[\w-]+)+\//.test(u)) u = 'https://' + u;
+        if (/^https?:\/\//i.test(u)) return u.replace(/^http:/i, 'https:');
+        return location.origin + '/' + u.replace(/^\/+/, '');
+      }
+      function draw() {
+        var u = abs(inp.value);
+        if (!u || !window.qrcode) { box.style.display = 'none'; return; }
+        var qr = qrcode(0, 'M'); qr.addData(u); qr.make();
+        document.getElementById('demo-qr').innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+        document.getElementById('demo-open').href = u;
+        box.style.display = 'flex';
+      }
+      inp.addEventListener('input', draw);
+      window.addEventListener('load', draw);
+    })();
+    </script>
+    <?php else: ?>
+    <p class="muted" style="font-size:13px">No se pudieron crear las columnas de la demo en la base de datos. En phpMyAdmin ejecuta:<br>
+    <span class="mono">ALTER TABLE posts ADD demo_url VARCHAR(500) NOT NULL DEFAULT '', ADD demo_note VARCHAR(255) NOT NULL DEFAULT '';</span></p>
+    <?php endif; ?>
+    </div>
 
     <label class="f" for="slug">Slug (opcional)</label>
     <input class="in" id="slug" name="slug" value="<?= e($item['slug']) ?>" placeholder="se genera del título">
