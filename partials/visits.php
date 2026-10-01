@@ -5,6 +5,7 @@
  * - No guarda la IP: guarda un identificador anónimo (hash) que cambia cada día,
  *   suficiente para contar visitantes únicos por día y nada más.
  * - Ignora bots conocidos, peticiones que no son GET, errores 404 y tus propias visitas (sesión de admin).
+ * - Ignora el spam de referencia (sitios de "backlinks") y el optimizador de caché de Hostinger (LSCWP_CTRL).
  */
 require_once __DIR__ . '/common.php';
 
@@ -37,6 +38,11 @@ function visit_source(): string {
     return ($host === '' || $host === $own) ? '' : substr($host, 0, 100);
 }
 
+/** Dominios de spam de referencia: bots que fingen venir de su sitio para que lo visites. */
+function is_spam_source(string $host): bool {
+    return $host !== '' && (bool) preg_match('/backlink|linkbuilding|qualitylink|dofollow|checker|dataindex/i', $host);
+}
+
 /** Registra la visita a la página actual. Nunca rompe la página si algo falla. */
 function track_visit(?int $postId = null): void {
     try {
@@ -45,6 +51,8 @@ function track_visit(?int $postId = null): void {
         if (current_user()) return;
         $ua = (string) ($_SERVER['HTTP_USER_AGENT'] ?? '');
         if (is_bot($ua)) return;
+        if (isset($_GET['LSCWP_CTRL'])) return; // optimizador de LiteSpeed Cache (Hostinger), no es una persona
+        if (is_spam_source(visit_source())) return;
 
         $day     = date('Y-m-d');
         $visitor = substr(hash_hmac('sha256', client_ip() . '|' . $ua . '|' . $day, DB_PASS), 0, 16);
