@@ -41,15 +41,29 @@ function page(int $status, string $title, string $message, string $buttonHtml = 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>{$t}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@700&display=swap">
 <style>
-  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;min-height:100vh;
-       display:flex;align-items:center;justify-content:center;background:#0f172a;color:#e2e8f0;padding:1rem}
-  .card{max-width:32rem;width:100%;background:#1e293b;border-radius:14px;padding:2rem;text-align:center}
-  h1{margin-top:0;font-size:1.5rem}
-  p{line-height:1.5;color:#cbd5e1}
-  a.btn{display:block;margin:1rem auto 0;max-width:22rem;padding:.8rem 1.4rem;background:#6366f1;color:#fff;
-        text-decoration:none;border-radius:10px;font-weight:600}
-  a.home{display:block;margin-top:1.5rem;color:#94a3b8;font-size:.9rem}
+  body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
+       background:#070A12;color:#EEF1F7;padding:1rem;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+  body::before{content:'';position:fixed;inset:-6%;z-index:-1;pointer-events:none;filter:blur(36px);
+       background:radial-gradient(40% 44% at 20% 24%,rgba(124,131,255,.38),transparent 72%),
+                  radial-gradient(36% 40% at 82% 32%,rgba(56,214,245,.22),transparent 72%),
+                  radial-gradient(42% 40% at 60% 88%,rgba(95,227,161,.22),transparent 72%)}
+  .card{max-width:32rem;width:100%;box-sizing:border-box;text-align:center;padding:2.4rem 2rem;border-radius:22px;
+        background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.12);
+        box-shadow:0 1px 0 rgba(255,255,255,.07) inset,0 30px 80px -20px rgba(0,0,0,.7);
+        backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%)}
+  h1{margin-top:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:1.65rem;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+  p{line-height:1.65;color:#9AA4B8}
+  a.btn{display:block;margin:1rem auto 0;max-width:22rem;padding:.85rem 1.4rem;border-radius:12px;font-weight:600;text-decoration:none;color:#04140C;
+        background:linear-gradient(135deg,#5FE3A1,#4BDCCB);box-shadow:0 8px 26px -8px rgba(95,227,161,.7),0 1px 0 rgba(255,255,255,.35) inset;transition:transform .15s}
+  a.btn:hover{transform:translateY(-2px)}
+  a.home{display:block;margin-top:1.6rem;color:#9AA4B8;font-size:.9rem;text-decoration:none}
+  a.home:hover{color:#EEF1F7}
+  a:focus-visible{outline:2px solid #5FE3A1;outline-offset:3px}
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.card{background:rgba(16,21,34,.94)}}
 </style>
 </head>
 <body>
