@@ -55,6 +55,18 @@ function source_name(string $host): string {
     return $host;
 }
 
+// ── Demos de /pwa/ (30 días) ──
+$demos = with_table(DEMO_HITS_TABLE_SQL, function () use ($from) {
+    $st = db()->prepare(
+        "SELECT demo, COUNT(DISTINCT day, visitor) AS v, COUNT(*) AS n,
+                COUNT(DISTINCT CASE WHEN is_return = 1 THEN CONCAT(day, visitor) END) AS ret,
+                COUNT(DISTINCT CASE WHEN mode = 'app' THEN CONCAT(day, visitor) END) AS app
+         FROM demo_hits WHERE day >= ? GROUP BY demo ORDER BY v DESC, n DESC"
+    );
+    $st->execute([$from]);
+    return $st->fetchAll();
+});
+
 // ── Seguridad: intentos de login ──
 $fails = with_table(LOGIN_ATTEMPTS_TABLE_SQL, function () {
     $n = db()->prepare('SELECT COUNT(*) FROM login_attempts WHERE success = 0 AND created_at > ?');
@@ -167,6 +179,20 @@ details summary{cursor:pointer;color:var(--muted);font-size:13px;margin-top:14px
       <tr><td class="muted">Directo / navegando en el sitio</td><td class="num"><?= $directCount ?></td></tr>
     </table>
   </div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <div style="font-weight:600">Demos (PWA) · 30 días</div>
+  <div class="muted" style="font-size:13px;margin:2px 0 6px">Cada día que alguien abre una demo cuenta como una visita. <b>Volvieron</b>: su celular ya la había abierto otro día. <b>Instalada</b>: la abrió como app desde su pantalla de inicio.</div>
+  <table>
+    <tr><th>Demo</th><th class="num">Visitantes</th><th class="num">Aperturas</th><th class="num">Volvieron</th><th class="num">Instalada</th></tr>
+    <?php foreach ($demos as $d): ?>
+    <tr><td><a class="mono" href="<?= e(url('pwa/' . $d['demo'] . '/')) ?>" target="_blank"><?= e($d['demo']) ?></a></td>
+      <td class="num"><?= (int) $d['v'] ?></td><td class="num"><?= (int) $d['n'] ?></td>
+      <td class="num"><?= (int) $d['ret'] ?></td><td class="num"><?= (int) $d['app'] ?></td></tr>
+    <?php endforeach; ?>
+    <?php if (!$demos): ?><tr><td colspan="5" class="muted">Todavía sin datos.</td></tr><?php endif; ?>
+  </table>
 </div>
 
 <h2 class="sec">Seguridad · últimos intentos de login</h2>

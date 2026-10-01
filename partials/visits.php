@@ -71,3 +71,46 @@ function track_visit(?int $postId = null): void {
         // El contador es secundario: si falla, la página se muestra igual.
     }
 }
+
+// ── Demos de /pwa/ ──────────────────────────────────────────────────────────
+// Son HTML estáticos (fuera de Git), así que cada demo avisa con sendBeacon a /pwa-hit.php.
+// Mismo identificador anónimo diario que las visitas; "is_return" lo calcula el propio
+// celular (recuerda en su navegador si ya la abrió otro día) y solo manda 0 o 1.
+
+const DEMO_HITS_TABLE_SQL = "CREATE TABLE IF NOT EXISTS demo_hits (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    day DATE NOT NULL,
+    visitor CHAR(16) NOT NULL,
+    demo VARCHAR(80) NOT NULL,
+    mode VARCHAR(8) NOT NULL DEFAULT 'web',
+    is_return TINYINT(1) NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL,
+    KEY idx_day_demo (day, demo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+
+/** Registra que alguien abrió la demo /pwa/<nombre>/. Nunca falla hacia afuera. */
+function track_demo_hit(string $path, string $mode, bool $isReturn): void {
+    try {
+        if (current_user()) return;
+        $ua = (string) ($_SERVER['HTTP_USER_AGENT'] ?? '');
+        if (is_bot($ua)) return;
+        // Solo carpetas que existen de verdad dentro de /pwa/
+        if (!preg_match('#^/pwa/([a-z0-9][a-z0-9_-]{0,79})(/|$)#i', $path, $m)) return;
+        if (!is_dir(dirname(__DIR__) . '/pwa/' . $m[1])) return;
+
+        $day     = date('Y-m-d');
+        $visitor = substr(hash_hmac('sha256', client_ip() . '|' . $ua . '|' . $day, DB_PASS), 0, 16);
+        $mode    = $mode === 'app' ? 'app' : 'web';
+
+        with_table(DEMO_HITS_TABLE_SQL, function () use ($day, $visitor, $m, $mode, $isReturn) {
+            db()->prepare('INSERT INTO demo_hits (day, visitor, demo, mode, is_return, created_at) VALUES (?,?,?,?,?,?)')
+                ->execute([$day, $visitor, strtolower($m[1]), $mode, (int) $isReturn, date('Y-m-d H:i:s')]);
+        });
+
+        if (random_int(1, 200) === 1) {
+            db()->prepare('DELETE FROM demo_hits WHERE day < ?')->execute([date('Y-m-d', strtotime('-400 days'))]);
+        }
+    } catch (Throwable $ex) {
+        // Secundario: si falla, la demo funciona igual.
+    }
+}
