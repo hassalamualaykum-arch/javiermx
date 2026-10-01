@@ -6,3 +6,6 @@ config.php
 /uploads/*
 !/uploads/.gitkeep
 !/uploads/.htaccess
+
+# Ejemplos PWA: se suben a mano (SSH / Administrador de archivos), el deploy no los toca
+/pwa/
